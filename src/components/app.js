@@ -1,13 +1,12 @@
 import React from 'react';
-import './app.css';
-import logo from './imgs/logo.svg';
+import List from './list';
+import { Route, Link } from 'react-router-dom';
+import AddForm from './add_form';
 
 const App = () => (
-    <div>
-        <div className="app">
-            <img src={logo} className="rotate"/>
-            <h1>Welcome to React!</h1>
-        </div>
+    <div className="container">
+        <Route exact path="/" component={List}/>
+        <Route path="/add" component={AddForm}/>
     </div>
 );
 
