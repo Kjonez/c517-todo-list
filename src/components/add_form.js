@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
+import { connect } from 'react-redux';
+import { addTodo } from '../actions/index';
 
 class Add extends Component {
 
     submitForm(vals){
-        console.log('form submitted:', vals);
+        this.props.addTodo(vals).then(() => {
+            this.props.history.push('/');
+        });
     }
     
     render(){
@@ -34,4 +38,4 @@ Add = reduxForm({
     form: 'add-item'
 })(Add);
 
-export default Add;
+export default connect(null, {addTodo})(Add);

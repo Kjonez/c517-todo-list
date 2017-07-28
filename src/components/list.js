@@ -10,7 +10,11 @@ class List extends Component {
 
     render(){
         const listElements = this.props.list.map((item, index) =>{
-            return <li key={index}>{item.title}</li>
+            return (
+                <li key={index}>
+                    <Link to={`/todo/${item._id}`}>{item.title}</Link>
+                </li>
+            )
         })
         return (
             <div>
