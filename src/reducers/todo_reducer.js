@@ -9,6 +9,9 @@ export default function(state = DEFAULT_STATE, action){
         case types.GET_SINGLE:
             console.log('Get single resp:', action);
             return {...state, single: action.payload.data.todo};
+        case types.TOGGLE_COMPLETE:
+            console.log('TOGGLE COMPLETE reducer:', action);
+            return {...state, single: action.payload.data.todo};
         default:
             return state;
     }
