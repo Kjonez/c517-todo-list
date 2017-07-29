@@ -4,14 +4,11 @@ const DEFAULT_STATE = { list: [], single: null };
 export default function(state = DEFAULT_STATE, action){
     switch(action.type){
         case types.GET_LIST:
-            console.log('Get List Action:', action);
-            return { ...state, list: action.payload.data.todos };
+            return { ...state, list: action.payload };
         case types.GET_SINGLE:
-            console.log('Get single resp:', action);
-            return {...state, single: action.payload.data.todo};
-        case types.TOGGLE_COMPLETE:
-            console.log('TOGGLE COMPLETE reducer:', action);
-            return {...state, single: action.payload.data.todo};
+            return {...state, single: action.payload};
+        case types.DELETE_ITEM:
+            return {...state, single: null};
         default:
             return state;
     }

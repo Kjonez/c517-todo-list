@@ -7,7 +7,6 @@ import Details from './item_details';
 const App = () => (
     <div className="container">
         <Route exact path="/" component={List}/>
-        <Route path="/add" component={AddForm}/>
         <Route path="/todo/:id" component={Details}/>
     </div>
 );

@@ -1,49 +1,67 @@
 import axios from 'axios';
 import types from './types';
+import { db } from '../firebase';
 
 const BASE_URL = 'http://api.reactprototypes.com';
 const API_KEY = '?key=demouser517';
 
-export function getTodos(){
-    const request = axios.get(`${BASE_URL}/todos${API_KEY}`);
+export function getTodos(snapshot){
+    
     return {
         type: types.GET_LIST,
-        payload: request
+        payload: snapshot
     }
 }
 
 export function addTodo(item){
-    const request = axios.post(`${BASE_URL}/todos${API_KEY}`, item);
+    const newItem = {
+        complete: false,
+        completed: null,
+        created: new Date().getTime(),
+        ...item
+    }
+
+    db.ref('todos/').push(newItem);
 
     return {
-        type: types.ADD_ITEM,
-        payload: request
+        type: types.ADD_ITEM
     }
 }
 
 export function getSingleTodo(id){
-    const request = axios.get(`${BASE_URL}/todos/${ id + API_KEY}`);
-
-    return {
-        type: types.GET_SINGLE,
-        payload: request
+    return dispatch => {
+        db.ref(`todos/${id}`).on('value', snap => {
+            dispatch(
+                {
+                    type: types.GET_SINGLE,
+                    payload: {
+                        item: snap.val(),
+                        key: snap.key
+                    }
+                }
+            )
+        });
     }
 }
 
 export function deleteTodo(id){
-    const request = axios.delete(`${BASE_URL}/todos/${ id + API_KEY}`);
+    
+    db.ref(`todos/${id}`).set(null);
 
     return {
-        type: types.DELETE_ITEM,
-        payload: request
+        type: types.DELETE_ITEM
     }
 }
 
-export function toggleTodo(id){
-    const request = axios.put(`${BASE_URL}/todos/${ id + API_KEY}`);
+export function toggleTodo(id, complete){
+    const updates = {
+        complete: !complete,
+        completed: complete ? null : new Date().getTime()
+    }
+    
+    db.ref(`todos/${id}`).update(updates);
 
     return {
-        type: types.TOGGLE_COMPLETE,
-        payload: request
+        type: types.TOGGLE_COMPLETE
     }
 }

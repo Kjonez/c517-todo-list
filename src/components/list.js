@@ -2,38 +2,42 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getTodos, deleteTodo } from '../actions/index';
+import { db } from '../firebase';
+import Add from './add_form';
 import Confirm from './confirm';
 
 class List extends Component {
     componentWillMount(){
-        this.props.getTodos();
-    }
-
-    handleDelete(id){
-        this.props.deleteTodo(id).then(() => {
-            this.props.getTodos();
+        db.ref('todos/').on('value', (snapshot) => {
+            this.props.getTodos(snapshot.val());
         });
     }
 
+    handleDelete(id){
+        this.props.deleteTodo(id);
+    }
+
     render(){
-        const listElements = this.props.list.map((item, index) =>{
+        const { list } = this.props;
+        const listElements = Object.keys(list).map((key, index) =>{
+            const item = list[key];
             return (
                 <li key={index} className="list-group-item">
                     <div className="col-6">
-                        <Link to={`/todo/${item._id}`}>{item.title}</Link>
+                        <Link to={`/todo/${key}`}>{item.title}</Link>
                     </div>
                     <div className="col-4">
                         <span className={item.complete ? 'text-success' : 'text-danger'}>{item.complete ? 'Completed' : 'Incomplete'}</span></div>
                     <div className="col-2">
-                        <Confirm className="btn btn-outline-danger" message={item.title} title="Are you sure you want to delete todo item:" text="Delete" onClick={() => this.handleDelete(item._id)}/>
+                        <Confirm className="btn btn-outline-danger" message={item.title} title="Are you sure you want to delete todo item:" text="Delete" onClick={() => this.handleDelete(key)}/>
                     </div>
                 </li>
             )
         })
         return (
             <div>
-                <Link to="/add" className="btn btn-outline-success my-2">Add Item</Link> 
                 <h1>To Do List</h1>
+                <Add/>
                 <ul className="list-group">
                     { listElements }
                 </ul>

@@ -11,32 +11,36 @@ class Details extends Component {
         this.props.getSingleTodo(id);
     }
 
+    componentWillReceiveProps(nextProps){
+        if(!nextProps.single || !nextProps.single.item){
+            this.props.history.push('/');
+        }
+    }
+
     tsToTime(ts){
         return new Date(parseInt(ts)).toLocaleString();
     }
 
     handleDelete(id){
-        this.props.deleteTodo(id).then(() => {
-            this.props.history.push('/');
-        });
+        this.props.deleteTodo(id);
     }
 
     render(){
         const { single } = this.props;
-        if(!single){
+        if(!single || !single.item){
             return <h1>Loading...</h1>
         }
-        console.log('Item:', single);
+        const { item, key } = single;
         return (
             <div className="card mt-5">
                 <div className="card-block">
-                    <h2 className="card-title">Item Title: {single.title}</h2>
-                    <h4 className="card-subtitle mb-2 text-muted">Item Details: {single.details}</h4>
-                    <p>Created: {this.tsToTime(single.created)}</p>
-                    <p>Item {single.complete ? `was completed ${this.tsToTime(single.completed)}` : 'is not completed'}</p>
+                    <h2 className="card-title">Item Title: {item.title}</h2>
+                    <h4 className="card-subtitle mb-2 text-muted">Item Details: {item.details}</h4>
+                    <p>Created: {this.tsToTime(item.created)}</p>
+                    <p>Item {item.complete ? `was completed ${this.tsToTime(item.completed)}` : 'is not completed'}</p>
                     <Link to="/" className="btn btn-outline-primary mr-2">Go Back</Link>
-                    <Confirm message={single.title} title="Are you sure you want to delete todo item:" text="Delete" onClick={() => { this.handleDelete(single._id) }} className="btn btn-outline-danger mr-2"/>
-                    <Confirm message={single.title} title={`Are you sure you want to ${single.complete ? 'restore' : 'complete'} list item:`} text={ single.complete ? 'Reopen' : 'Complete'} onClick={() => { this.props.toggleTodo(single._id) }} className={`btn btn-outline-${ single.complete ? 'warning' : 'info'}`}/>
+                    <Confirm message={item.title} title="Are you sure you want to delete todo item:" text="Delete" onClick={() => { this.handleDelete(key) }} className="btn btn-outline-danger mr-2"/>
+                    <Confirm message={item.title} title={`Are you sure you want to ${item.complete ? 'restore' : 'complete'} list item:`} text={ item.complete ? 'Reopen' : 'Complete'} onClick={() => { this.props.toggleTodo(key, item.complete) }} className={`btn btn-outline-${ item.complete ? 'warning' : 'info'}`}/>
                 </div>
             </div>
         )

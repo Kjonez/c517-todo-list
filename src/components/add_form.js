@@ -6,19 +6,17 @@ import { addTodo } from '../actions/index';
 
 class Add extends Component {
 
-    submitForm(vals){
-        console.log('submit called');
-        this.props.addTodo(vals).then(() => {
-            this.props.history.push('/');
-        });
+    submitForm(vals, reset){
+        this.props.addTodo(vals);
+        reset();
     }
 
     renderInput({input, label, meta: { touched, error}}){
         return (
             <div className="form-group">
-                <label>{label}</label>
-                <input {...input} name={input.name} type="text" className="form-control"/>
-                <p className="form-text text-danger">{touched && error}</p>
+                <label className="mr-2">{label}</label>
+                <input {...input} name={input.name} type="text" className="form-control mr-2"/>
+                {/*<p className="form-text text-danger">{touched && error}</p>*/}
             </div>
         )
     }
@@ -26,10 +24,8 @@ class Add extends Component {
     render(){
         const { handleSubmit, reset } = this.props;
         return (
-            <div>
-                <Link to="/" className="btn btn-outline-primary my-2">Go Back</Link>
-                <h1>Add item</h1>
-                <form onSubmit={handleSubmit((values) => this.submitForm(values))}>
+            <div className="my-5">
+                <form className="form-inline" onSubmit={handleSubmit((values) => this.submitForm(values, reset))}>
                     <Field name="title" label="Title" component={this.renderInput}/>
                     <Field name="details" label="Details" component={this.renderInput}/>
                     <button className="btn btn-outline-success mr-2">Add Item</button>
