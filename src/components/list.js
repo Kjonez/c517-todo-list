@@ -2,19 +2,17 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getTodos, deleteTodo } from '../actions/index';
-import Modal from './modal';
+import Confirm from './confirm';
 
 class List extends Component {
     componentWillMount(){
         this.props.getTodos();
     }
 
-    handleDelete(id, title){
-        if(confirm(`Are you sure you want to delete todo item:\n\n${title}`)){
-            this.props.deleteTodo(id).then(() => {
-                this.props.getTodos();
-            });
-        }
+    handleDelete(id){
+        this.props.deleteTodo(id).then(() => {
+            this.props.getTodos();
+        });
     }
 
     render(){
@@ -24,9 +22,10 @@ class List extends Component {
                     <div className="col-6">
                         <Link to={`/todo/${item._id}`}>{item.title}</Link>
                     </div>
-                    <div className="col-4"><span className={item.complete ? 'text-success' : 'text-danger'}>{item.complete ? 'Completed' : 'Incomplete'}</span></div>
+                    <div className="col-4">
+                        <span className={item.complete ? 'text-success' : 'text-danger'}>{item.complete ? 'Completed' : 'Incomplete'}</span></div>
                     <div className="col-2">
-                        <button onClick={() => { this.handleDelete(item._id, item.title) }} className="btn btn-outline-danger">Delete</button>
+                        <Confirm className="btn btn-outline-danger" message={item.title} title="Are you sure you want to delete todo item:" text="Delete" onClick={() => this.handleDelete(item._id)}/>
                     </div>
                 </li>
             )
@@ -38,7 +37,6 @@ class List extends Component {
                 <ul className="list-group">
                     { listElements }
                 </ul>
-                <Modal/>
             </div>
         )
     }
